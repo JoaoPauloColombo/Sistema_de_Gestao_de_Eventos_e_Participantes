@@ -1,3 +1,4 @@
+const Evento = require("../models/Evento");
 const Participante = require("../models/Participante");
 
 const ParticipanteController = {
@@ -60,6 +61,28 @@ const ParticipanteController = {
       return res.status(500).json({ msg: "Acione o Suporte" });
     }
   },
+  getEvento: async (req, res) => {
+    try {
+      const { eventoId } = req.params; // Extrai o ID do evento da URL
+  
+      // Busca os participantes relacionados ao evento específico
+      const eventos = await Evento.findAll({
+        where: {
+          id: eventoId, // Filtra por eventoId
+        },
+      });
+  
+      // Retorna a lista de participantes com mensagem de sucesso
+      return res.status(200).json({
+        msg: "Participantes do Evento!",
+        eventos,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ msg: "Acione o Suporte" }); // Tratamento de erros
+    }
+  },
+
   getOne: async (req, res) => {
     try {
       const { id } = req.params;
