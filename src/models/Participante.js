@@ -1,5 +1,6 @@
 const {DataTypes} = require("sequelize");
 const sequelize = require("../config/config");
+const Evento = require('../models/Evento')
 
 
 const Participante = sequelize.define('participante',{
@@ -16,7 +17,7 @@ const Participante = sequelize.define('participante',{
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {       
-            model: 'Evento',
+            model: Evento,
             key: 'id'
           }
     }
