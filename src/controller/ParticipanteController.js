@@ -6,7 +6,7 @@ const ParticipanteController = {
     try {
       const { nome, email, eventoId } = req.body;
 
-      const participanteCriado = await Evento.create({ nome, email, eventoId });
+      const participanteCriado = await Participante.create({ nome, email, eventoId });
 
       return res.status(200).json({
         msg: "Participante adicionado com sucesso!",
