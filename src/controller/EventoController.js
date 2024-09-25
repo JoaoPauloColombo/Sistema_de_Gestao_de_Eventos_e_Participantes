@@ -61,17 +61,23 @@ const EventoController = {
       return res.status(500).json({ msg: "Acione o Suporte" });
     }
   },
+  
   getParticipante: async (req, res) => {
     try {
       const { id } = req.params; // Extrai o ID do evento da URL
-  
+    
       // Busca os participantes relacionados ao evento específico
       const participantes = await Participante.findAll({
         where: {
-          eventoId: id, // Filtra por eventoId
+          eventoId: id, // Filtra pelo eventoId fornecido
         },
       });
   
+      // Verifica se há participantes encontrados
+      if (participantes.length === 0) {
+        return res.status(404).json({ msg: "Nenhum participante encontrado para este evento." });
+      }
+    
       // Retorna a lista de participantes com mensagem de sucesso
       return res.status(200).json({
         msg: "Participantes do Evento!",
@@ -82,6 +88,7 @@ const EventoController = {
       return res.status(500).json({ msg: "Acione o Suporte" }); // Tratamento de erros
     }
   },
+  
   
   getOne: async (req, res) => {
     try {

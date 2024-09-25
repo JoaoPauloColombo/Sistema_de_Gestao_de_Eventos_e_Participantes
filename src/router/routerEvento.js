@@ -19,7 +19,7 @@ router.get('/:id',validateEventoId,(req,res) => {
 router.delete('/:id',validateEventoId,(req,res) => {
     EventoController.delete(req,res)
 });
-router.get('/:id/participante',(req,res) => {
+router.get('/participante/:id',validateEventoId,(req,res) => {
     EventoController.getParticipante(req,res)
 });
 

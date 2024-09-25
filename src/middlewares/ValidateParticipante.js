@@ -12,8 +12,9 @@ const validateParticipante = (req,res,next) => {
 
 const validateParticipanteId = (req,res,next) => {
     const {id} = req.params;
+    const {eventoId} = req.params;
 
-    if(!id){
+    if(!id && !eventoId){
         return res.status(400).json({
             msg:"Parametro faltando"
         });
