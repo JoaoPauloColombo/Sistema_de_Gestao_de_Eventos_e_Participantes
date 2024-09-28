@@ -6,6 +6,20 @@ const ParticipanteController = {
     try {
       const { nome, email, eventoId } = req.body;
 
+      // Verifica se já existe um participante com o mesmo email e eventoId
+      const participanteExistente = await Participante.findOne({
+        where: {
+          email,
+          eventoId,
+        },
+      });
+
+      if (participanteExistente) {
+        return res.status(400).json({
+          msg: "Já existe um participante com esse email para esse evento",
+        });
+      }
+
       const participanteCriado = await Participante.create({ nome, email, eventoId });
 
       return res.status(200).json({
@@ -41,9 +55,9 @@ const ParticipanteController = {
           msg: "Participante atualizado com sucesso!",
         });
       }
-    return res.status(500).json({
-        msg:"Erro ao atualizar perfil do participante"
-    })
+      return res.status(500).json({
+        msg: "Erro ao atualizar perfil do participante"
+      })
     } catch (error) {
       console.error(error);
       return res.status(500).json({ msg: "Acione o Suporte" });
@@ -61,11 +75,11 @@ const ParticipanteController = {
       return res.status(500).json({ msg: "Acione o Suporte" });
     }
   },
-  
+
   getEvento: async (req, res) => {
     try {
       const { eventoId } = req.params; // Extrai o ID do evento da URL
-  
+
       // Busca o evento junto com os participantes relacionados
       const evento = await Evento.findOne({
         where: {
@@ -78,12 +92,12 @@ const ParticipanteController = {
           },
         ],
       });
-  
+
       // Verifica se o evento foi encontrado
       if (!evento) {
         return res.status(404).json({ msg: "Evento não encontrado" });
       }
-  
+
       // Retorna a lista de participantes do evento
       return res.status(200).json({
         msg: "Participantes do Evento!",
@@ -93,7 +107,7 @@ const ParticipanteController = {
       console.error(error);
       return res.status(500).json({ msg: "Acione o Suporte" }); // Tratamento de erros
     }
-  },  
+  },
 
   getOne: async (req, res) => {
     try {
@@ -115,6 +129,7 @@ const ParticipanteController = {
       return res.status(500).json({ msg: "Acione o Suporte" });
     }
   },
+  // ParticipanteController.js
   delete: async (req, res) => {
     try {
       const { id } = req.params;
@@ -126,6 +141,16 @@ const ParticipanteController = {
           msg: "Participante nao encontrado",
         });
       }
+
+      // Verifica se o participante ainda está associado a um evento
+      const evento = await Evento.findByPk(participanteFinded.eventoId);
+
+      if (evento) {
+        return res.status(400).json({
+          msg: "Não é possível excluir um participante que ainda está associado a um evento",
+        });
+      }
+
       await participanteFinded.destroy();
 
       return res.status(200).json({
